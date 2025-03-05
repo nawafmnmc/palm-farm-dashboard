@@ -1,1 +1,39 @@
-pip install dash plotly pandas
+import dash
+from dash import dcc, html
+import plotly.express as px
+import pandas as pd
+
+# إنشاء تطبيق داش بورد
+app = dash.Dash(__name__)
+
+# بيانات تجريبية لإدارة العمليات الزراعية
+data = {
+    "العمليات": ["الري", "التسميد", "مكافحة الآفات", "الحصاد"],
+    "عدد العمليات": [50, 30, 20, 40]
+}
+
+# بيانات الإنتاج الشهري
+production_data = {
+    "الشهر": ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو"],
+    "الإنتاج (طن)": [200, 220, 250, 270, 300, 310]
+}
+
+# تحويل البيانات إلى DataFrame
+operations_df = pd.DataFrame(data)
+production_df = pd.DataFrame(production_data)
+
+# إنشاء رسوم بيانية
+operations_fig = px.bar(operations_df, x="العمليات", y="عدد العمليات", title="إحصائيات العمليات الزراعية")
+production_fig = px.line(production_df, x="الشهر", y="الإنتاج (طن)", title="الإنتاج الشهري لمزرعة النخيل")
+
+# تصميم لوحة التحكم
+app.layout = html.Div([
+    html.H1("لوحة تحكم إدارة مزارع النخيل", style={"textAlign": "center"}),
+    dcc.Graph(figure=operations_fig),
+    dcc.Graph(figure=production_fig),
+])
+
+# تشغيل التطبيق
+if __name__ == "__main__":
+    app.run_server(debug=True)
+
